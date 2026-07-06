@@ -30,6 +30,14 @@ def init_db():
                    medium INTEGER,
                    hard INTEGER,
                    last_updated TEXT)""")
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        message TEXT NOT NULL,
+        submitted_at TEXT
+    )
+""")
     cursor.execute("""CREATE TABLE IF NOT EXISTS friendships(
                    username TEXT NOT NULL,
                    friend_username TEXT NOT NULL,

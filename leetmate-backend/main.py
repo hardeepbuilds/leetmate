@@ -1,12 +1,13 @@
-from fastapi import FastAPI,HTTPException, Depends
+from fastapi import FastAPI,HTTPException, Depends, Query
 from pydantic import BaseModel, Field
 from enum import Enum
-from database import get_connection, init_db, create_user, get_user_by_username
+from database import get_connection, get_ist_now, init_db, create_user, get_user_by_username
 import bcrypt
 from auth import create_access_token, get_current_user
 from leetcode import fetch_leetcode_stats
 from scheduler import scheduler
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 init_db()
 
@@ -212,3 +213,29 @@ async def start_scheduler():
 @app.on_event("shutdown")
 async def stop_scheduler():
     scheduler.shutdown() 
+#feeback__________________________________________________________________________________________________________________________________________
+class FeedbackRequest(BaseModel):
+    message: str
+
+@app.post("/feedback")
+def submit_feedback(data: FeedbackRequest, current_user: str = Depends(get_current_user)):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO feedback (username, message, submitted_at)
+        VALUES (?, ?, ?)
+    """, (current_user, data.message, get_ist_now()))
+    conn.commit()
+    conn.close()
+    return {"message": "Feedback received — thank you!"}
+
+@app.get("/feedback/all")
+def get_all_feedback(admin_key: str = Query(...)):
+    if admin_key != os.getenv("ADMIN_KEY"):
+        raise HTTPException(status_code=403, detail="Not authorized")
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, message, submitted_at FROM feedback ORDER BY submitted_at DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [{"username": r[0], "message": r[1], "submitted_at": r[2]} for r in rows]
