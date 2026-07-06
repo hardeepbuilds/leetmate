@@ -1,4 +1,17 @@
-backend/.env
-backend/leetmate.db
-backend/__pycache__/
-backend/myenv/
+# Environment
+leetmate-backend/.env
+
+# Database
+leetmate.db
+
+# Cache
+__pycache__/
+**/__pycache__/
+
+# Virtual environments
+.myenv/
+.venv/
+myenv/
+
+# Python
+*.pyc
