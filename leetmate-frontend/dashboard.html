@@ -390,6 +390,16 @@
     </div>
 
 </div>
+<!-- FEEDBACK -->
+<div style="margin-top:32px;">
+    <div class="section-label">Send Feedback</div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+        <input type="text" id="feedback-input" placeholder="Tell me what you think or what to improve..." 
+               style="flex:1;padding:10px 13px;background:#0a0a0a;border:1px solid #1f1f1f;border-radius:7px;color:#e0e0e0;font-size:13.5px;font-family:Inter,sans-serif;outline:none;">
+        <button onclick="submitFeedback()" class="btn-add">Send</button>
+    </div>
+    <div id="feedback-msg" style="font-size:12.5px;margin-top:10px;display:none;"></div>
+</div>
 
 <script>
     const BASE_URL = "http://127.0.0.1:8080"
@@ -501,6 +511,20 @@
     }
 
     loadDashboard()
+    async function submitFeedback() {
+    const message = document.getElementById("feedback-input").value.trim()
+    if (!message) return
+
+    const response = await authFetch("/feedback", "POST", {message})
+    const data = await response.json()
+
+    const msg = document.getElementById("feedback-msg")
+    msg.textContent = response.ok ? data.message : data.detail
+    msg.style.color = response.ok ? "#22c55e" : "#ef4444"
+    msg.style.display = "block"
+
+    if (response.ok) document.getElementById("feedback-input").value = ""
+}
 </script>
 </body>
 </html>

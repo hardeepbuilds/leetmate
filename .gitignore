@@ -1,3 +1,4 @@
-.env
-LEETMATE.db
-__pycache__/
+backend/.env
+backend/leetmate.db
+backend/__pycache__/
+backend/myenv/
