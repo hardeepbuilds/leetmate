@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetMate — Leaderboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            background: #111111;
+            border-bottom: 1px solid #1f1f1f;
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        .nav-brand span { color: #22c55e; }
+
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+
+        .nav-links a {
+            font-size: 13.5px;
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover { color: #e0e0e0; }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: #1a2e1a;
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid #1f1f1f;
+            color: #555;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+        /* MAIN */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .page-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        /* FILTER BUTTONS */
+        .filters {
+            display: flex;
+            gap: 6px;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            background: #111;
+            border: 1px solid #1f1f1f;
+            border-radius: 6px;
+            color: #555;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-btn.active {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #0a0a0a;
+        }
+
+        /* TABLE */
+        .table-wrap {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .lb-header-row {
+            display: grid;
+            grid-template-columns: 48px 1fr 70px 80px 60px 70px 60px 100px;
+            padding: 11px 18px;
+            border-bottom: 1px solid #1a1a1a;
+            gap: 8px;
+        }
+
+        .lb-header-row span {
+            font-size: 10.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #333;
+        }
+
+        .lb-row {
+            display: grid;
+            grid-template-columns: 48px 1fr 70px 80px 60px 70px 60px 100px;
+            padding: 13px 18px;
+            border-bottom: 1px solid #141414;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .lb-row:last-child { border-bottom: none; }
+
+        .lb-row.is-me {
+            background: #0d1a0d;
+            border-left: 2px solid #22c55e;
+        }
+
+        .rank-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .lb-row.is-me .rank-num { color: #22c55e; }
+
+        .rank-num.top1 { color: #22c55e; }
+        .rank-num.top2 { color: #4ade80; }
+        .rank-num.top3 { color: #555; }
+
+        .lb-name {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .lb-row.is-me .lb-name { color: #22c55e; }
+
+        .lb-branch {
+            font-size: 11px;
+            color: #444;
+            background: #1a1a1a;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .lb-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .lb-total { color: #22c55e; }
+        .lb-easy { color: #4ade80; }
+        .lb-medium { color: #888; }
+        .lb-hard { color: #555; }
+
+        .gap-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .gap-pill.me { background: #1a2e1a; color: #22c55e; border: 1px solid #22c55e; }
+        .gap-pill.ahead { background: #0a1a0a; color: #4ade80; border: 1px solid #103a10; }
+        .gap-pill.behind { background: #1a1a1a; color: #444; border: 1px solid #2a2a2a; }
+
+        .empty-state {
+            padding: 48px;
+            text-align: center;
+            color: #333;
+            font-size: 13.5px;
+        }
+
+        @media (max-width: 700px) {
+            .lb-header-row,
+            .lb-row {
+                grid-template-columns: 40px 1fr 60px 70px 90px;
+            }
+            .lb-easy, .lb-medium, .lb-hard,
+            .lb-header-row span:nth-child(5),
+            .lb-header-row span:nth-child(6),
+            .lb-header-row span:nth-child(7) {
+                display: none;
+            }
+            nav { padding: 14px 16px; }
+            .main { padding: 20px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-brand">leet<span>mate</span></div>
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-user">
+        <div class="avatar" id="nav-avatar">?</div>
+        <span id="nav-username"></span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="page-header">
+        <div class="page-title">Leaderboard</div>
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterBranch('ALL', this)">All</button>
+            <button class="filter-btn" onclick="filterBranch('CSE', this)">CSE</button>
+            <button class="filter-btn" onclick="filterBranch('IT', this)">IT</button>
+            <button class="filter-btn" onclick="filterBranch('ECE', this)">ECE</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <div class="lb-header-row">
+            <span>#</span>
+            <span>Student</span>
+            <span>Branch</span>
+            <span style="text-align:right">Total</span>
+            <span style="text-align:right">Easy</span>
+            <span style="text-align:right">Medium</span>
+            <span style="text-align:right">Hard</span>
+            <span style="text-align:right">vs you</span>
+        </div>
+        <div id="lb-body">
+            <div class="empty-state">Loading leaderboard...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://127.0.0.1:8080"
+    const token = localStorage.getItem("token")
+    if (!token) window.location.href = "login.html"
+
+    let allRows = []
+    let myUsername = ""
+    let myTotal = 0
+
+    async function authFetch(endpoint) {
+        return await fetch(`${BASE_URL}${endpoint}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+    }
+
+    async function loadLeaderboard() {
+        const meRes = await authFetch("/me")
+        const meData = await meRes.json()
+        if (!meRes.ok) { window.location.href = "login.html"; return }
+
+        myUsername = meData.username
+        myTotal = meData.total_solved
+        document.getElementById("nav-username").textContent = myUsername
+        document.getElementById("nav-avatar").textContent = myUsername.charAt(0).toUpperCase()
+
+        const lbRes = await authFetch("/leaderboard")
+        allRows = await lbRes.json()
+        renderTable(allRows)
+    }
+
+    function renderTable(rows) {
+        const body = document.getElementById("lb-body")
+        if (!rows.length) {
+            body.innerHTML = `<div class="empty-state">No data yet.</div>`
+            return
+        }
+
+        body.innerHTML = rows.map((row, index) => {
+            const isMe = row.username === myUsername
+            const gap = row.total_solved - myTotal
+
+            let rankClass = ""
+            if (index === 0) rankClass = "top1"
+            else if (index === 1) rankClass = "top2"
+            else if (index === 2) rankClass = "top3"
+
+            let pillClass = isMe ? "me" : gap > 0 ? "ahead" : "behind"
+            let pillText = isMe
+                ? "you"
+                : gap > 0
+                ? `+${gap}`
+                : `${Math.abs(gap)}`
+
+            return `
+                <div class="lb-row ${isMe ? "is-me" : ""}">
+                    <div class="rank-num ${rankClass}">${index + 1}</div>
+                    <div class="lb-name">${row.username}</div>
+                    <div class="lb-branch">${row.branch}</div>
+                    <div class="lb-num lb-total">${row.total_solved}</div>
+                    <div class="lb-num lb-easy">${row.easy}</div>
+                    <div class="lb-num lb-medium">${row.medium}</div>
+                    <div class="lb-num lb-hard">${row.hard}</div>
+                    <div class="gap-pill ${pillClass}">${pillText}</div>
+                </div>
+            `
+        }).join("")
+    }
+
+    function filterBranch(branch, btn) {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"))
+        btn.classList.add("active")
+
+        const filtered = branch === "ALL"
+            ? allRows
+            : allRows.filter(r => r.branch.toUpperCase() === branch.toUpperCase())
+
+        const reranked = filtered.map((r, i) => ({...r, rank: i + 1}))
+        renderTable(reranked)
+    }
+
+    function logout() {
+        localStorage.removeItem("token")
+        window.location.href = "login.html"
+    }
+
+    loadLeaderboard()
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetMate — Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+ 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+ 
+        .wrap {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+        }
+ 
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+ 
+        .brand-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            color: #e0e0e0;
+            letter-spacing: -0.02em;
+        }
+ 
+        .brand-name span { color: #22c55e; }
+ 
+        .brand-sub {
+            font-size: 13px;
+            color: #555;
+            margin-top: 6px;
+        }
+ 
+        .card {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 32px;
+        }
+ 
+        .tab-row {
+            display: flex;
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 28px;
+        }
+ 
+        .tab-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: #555;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+ 
+        .tab-btn.active {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #2a2a2a;
+        }
+ 
+        .field {
+            margin-bottom: 16px;
+        }
+ 
+        .field label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 7px;
+        }
+ 
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 10px 13px;
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 7px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+ 
+        .field input:focus,
+        .field select:focus {
+            border-color: #22c55e;
+        }
+ 
+        .field input::placeholder { color: #333; }
+ 
+        .field select option { background: #111; }
+ 
+        .btn {
+            width: 100%;
+            padding: 11px;
+            background: #22c55e;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+ 
+        .btn:hover { background: #16a34a; }
+ 
+        .error-msg {
+            font-size: 12.5px;
+            color: #ef4444;
+            background: #1a0a0a;
+            border: 1px solid #3a1010;
+            border-radius: 6px;
+            padding: 9px 12px;
+            margin-top: 14px;
+            display: none;
+        }
+ 
+        .success-msg {
+            font-size: 12.5px;
+            color: #22c55e;
+            background: #0a1a0a;
+            border: 1px solid #103a10;
+            border-radius: 6px;
+            padding: 9px 12px;
+            margin-top: 14px;
+            display: none;
+        }
+ 
+        .foot {
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="brand">
+        <div class="brand-name">leet<span>mate</span></div>
+        <div class="brand-sub">track · compare · compete</div>
+    </div>
+ 
+    <div class="card">
+        <div class="tab-row">
+            <button class="tab-btn active" onclick="showTab('login')">Log in</button>
+            <button class="tab-btn" onclick="showTab('signup')">Sign up</button>
+        </div>
+ 
+        <!-- LOGIN -->
+        <div id="login-form">
+            <div class="field">
+                <label>Username</label>
+                <input type="text" id="login-username" placeholder="your_username">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            <button class="btn" onclick="handleLogin()">Log in</button>
+        </div>
+ 
+        <!-- SIGNUP -->
+        <div id="signup-form" style="display:none;">
+            <div class="field">
+                <label>Username</label>
+                <input type="text" id="signup-username" placeholder="choose a username">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="signup-password" placeholder="at least 6 characters">
+            </div>
+            <div class="field">
+                <label>Branch</label>
+                <select id="signup-branch">
+                    <option value="">Select branch</option>
+                    <option value="CSE">CSE</option>
+                    <option value="IT">IT</option>
+                    <option value="ECE">ECE</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>LeetCode Username</label>
+                <input type="text" id="signup-leetcode" placeholder="your leetcode handle">
+            </div>
+            <button class="btn" onclick="handleSignup()">Create account</button>
+        </div>
+ 
+        <div class="error-msg" id="error-msg"></div>
+        <div class="success-msg" id="success-msg"></div>
+    </div>
+ 
+    <div class="foot">Free for everyone in your class. No email needed.</div>
+</div>
+ 
+<script>
+    const BASE_URL = "http://127.0.0.1:8080"
+ 
+    function showTab(tab) {
+        document.getElementById("login-form").style.display = tab === "login" ? "block" : "none"
+        document.getElementById("signup-form").style.display = tab === "signup" ? "block" : "none"
+        document.querySelectorAll(".tab-btn").forEach((b, i) => {
+            b.classList.toggle("active", (i === 0 && tab === "login") || (i === 1 && tab === "signup"))
+        })
+        hideMessages()
+    }
+ 
+    function showError(msg) {
+        const el = document.getElementById("error-msg")
+        el.textContent = msg
+        el.style.display = "block"
+        document.getElementById("success-msg").style.display = "none"
+    }
+ 
+    function showSuccess(msg) {
+        const el = document.getElementById("success-msg")
+        el.textContent = msg
+        el.style.display = "block"
+        document.getElementById("error-msg").style.display = "none"
+    }
+ 
+   async function handleLogin() {
+    const username = document.getElementById("login-username").value.trim()
+    const password = document.getElementById("login-password").value
+
+    console.log("username:", username)
+    console.log("password:", password)
+    console.log("hitting:", `${BASE_URL}/login`)
+
+    if (!username || !password) { showError("Fill in both fields."); return }
+
+    const response = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    })
+
+    console.log("response status:", response.status)
+
+    const data = await response.json()
+    console.log("response data:", data)
+
+    if (!response.ok) { showError(data.detail); return }
+
+    localStorage.setItem("token", data.access_token)
+    window.location.href = "dashboard.html"
+}
+ 
+    async function handleSignup() {
+        const username = document.getElementById("signup-username").value.trim()
+        const password = document.getElementById("signup-password").value
+        const branch = document.getElementById("signup-branch").value
+        const leetcode_name = document.getElementById("signup-leetcode").value.trim()
+ 
+        if (!username || !password || !branch || !leetcode_name) {
+            showError("Fill in all fields.")
+            return
+        }
+ 
+        const response = await fetch(`${BASE_URL}/signup`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({username, password, branch, leetcode_name})
+        })
+        const data = await response.json()
+        if (!response.ok) { showError(data.detail); return }
+ 
+        showSuccess("Account created — log in now.")
+        showTab("login")
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetMate — Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            background: #111111;
+            border-bottom: 1px solid #1f1f1f;
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        .nav-brand span { color: #22c55e; }
+
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+
+        .nav-links a {
+            font-size: 13.5px;
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover { color: #e0e0e0; }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: #1a2e1a;
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid #1f1f1f;
+            color: #555;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+        /* MAIN */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        /* ONLINE BANNER */
+        .online-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: #555;
+            margin-bottom: 24px;
+        }
+
+        .pip {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .online-banner b { color: #22c55e; }
+
+        /* SECTION LABEL */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        /* GAP CARD */
+        .gap-card {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .gap-card-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #444;
+            margin-bottom: 14px;
+        }
+
+        .gap-message {
+            font-size: 15px;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .gap-message .highlight {
+            font-family: 'JetBrains Mono', monospace;
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .gap-message .top-name {
+            color: #888;
+            font-weight: 600;
+        }
+
+        /* STAT GRID */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 10px;
+            padding: 18px 16px;
+        }
+
+        .stat-box-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .stat-box-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .stat-box.total .stat-box-value { color: #22c55e; }
+        .stat-box.easy .stat-box-value { color: #4ade80; }
+        .stat-box.medium .stat-box-value { color: #888; }
+        .stat-box.hard .stat-box-value { color: #555; }
+
+        /* LAST UPDATED */
+        .last-updated {
+            font-size: 11.5px;
+            color: #333;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 28px;
+        }
+
+        /* FRIENDS SECTION */
+        .friends-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .add-friend-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .add-friend-row input {
+            flex: 1;
+            padding: 9px 13px;
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 7px;
+            color: #e0e0e0;
+            font-size: 13.5px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+
+        .add-friend-row input:focus { border-color: #22c55e; }
+        .add-friend-row input::placeholder { color: #333; }
+
+        .btn-add {
+            padding: 9px 16px;
+            background: #22c55e;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover { background: #16a34a; }
+
+        .friend-msg {
+            font-size: 12.5px;
+            margin-bottom: 12px;
+            display: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .friend-msg.ok { color: #22c55e; background: #0a1a0a; border: 1px solid #103a10; }
+        .friend-msg.err { color: #ef4444; background: #1a0a0a; border: 1px solid #3a1010; }
+
+        /* FRIEND ROWS */
+        .friends-list {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .friend-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px 100px;
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid #1a1a1a;
+            gap: 12px;
+        }
+
+        .friend-row:last-child { border-bottom: none; }
+
+        .friend-info-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .friend-info-branch {
+            font-size: 11.5px;
+            color: #444;
+            margin-top: 2px;
+        }
+
+        .friend-stat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #888;
+            text-align: right;
+        }
+
+        .friend-stat-label {
+            font-size: 10px;
+            color: #333;
+            text-align: right;
+            margin-top: 1px;
+        }
+
+        .gap-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .gap-pill.ahead { background: #0a1a0a; color: #22c55e; border: 1px solid #103a10; }
+        .gap-pill.behind { background: #1a1a1a; color: #555; border: 1px solid #2a2a2a; }
+        .gap-pill.same { background: #111; color: #444; border: 1px solid #222; }
+
+        .empty-friends {
+            padding: 32px;
+            text-align: center;
+            color: #333;
+            font-size: 13.5px;
+        }
+
+        @media (max-width: 600px) {
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            nav { padding: 14px 16px; }
+            .main { padding: 20px 16px 60px; }
+            .friend-row { grid-template-columns: 1fr 70px 80px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-brand">leet<span>mate</span></div>
+    <div class="nav-links">
+        <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <div class="nav-user">
+        <div class="avatar" id="nav-avatar">?</div>
+        <span id="nav-username"></span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="main">
+
+    <div class="online-banner">
+        <div class="pip"></div>
+        <span><b id="online-count">—</b> classmates online right now</span>
+    </div>
+
+    <!-- GAP CARD -->
+    <div class="gap-card">
+        <div class="gap-card-label">Distance to #1</div>
+        <div class="gap-message" id="gap-message">Loading...</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="section-label">Your stats</div>
+    <div class="stat-grid">
+        <div class="stat-box total">
+            <div class="stat-box-label">Total</div>
+            <div class="stat-box-value" id="total-solved">—</div>
+        </div>
+        <div class="stat-box easy">
+            <div class="stat-box-label">Easy</div>
+            <div class="stat-box-value" id="easy">—</div>
+        </div>
+        <div class="stat-box medium">
+            <div class="stat-box-label">Medium</div>
+            <div class="stat-box-value" id="medium">—</div>
+        </div>
+        <div class="stat-box hard">
+            <div class="stat-box-label">Hard</div>
+            <div class="stat-box-value" id="hard">—</div>
+        </div>
+    </div>
+    <div class="last-updated">Last updated: <span id="last-updated">—</span></div>
+
+    <!-- FRIENDS -->
+    <div class="friends-header">
+        <div class="section-label" style="margin-bottom:0;">Friends</div>
+    </div>
+
+    <div class="add-friend-row">
+        <input type="text" id="friend-input" placeholder="Enter classmate's username">
+        <button class="btn-add" onclick="addFriend()">Add</button>
+    </div>
+    <div class="friend-msg" id="friend-msg"></div>
+
+    <div class="friends-list" id="friends-list">
+        <div class="empty-friends">Loading friends...</div>
+    </div>
+
+</div>
+
+<script>
+    const BASE_URL = "http://127.0.0.1:8080"
+    const token = localStorage.getItem("token")
+    if (!token) window.location.href = "login.html"
+
+    async function authFetch(endpoint, method="GET", body=null) {
+        const options = {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        if (body) options.body = JSON.stringify(body)
+        return await fetch(`${BASE_URL}${endpoint}`, options)
+    }
+
+    async function loadDashboard() {
+        await loadMe()
+        await loadFriends()
+        await loadOnlineCount()
+    }
+
+    async function loadMe() {
+        const response = await authFetch("/me")
+        const data = await response.json()
+        if (!response.ok) { window.location.href = "login.html"; return }
+
+        const initial = data.username.charAt(0).toUpperCase()
+        document.getElementById("nav-avatar").textContent = initial
+        document.getElementById("nav-username").textContent = data.username
+        document.getElementById("total-solved").textContent = data.total_solved
+        document.getElementById("easy").textContent = data.easy
+        document.getElementById("medium").textContent = data.medium
+        document.getElementById("hard").textContent = data.hard
+        document.getElementById("last-updated").textContent = data.last_updated
+
+        const gapEl = document.getElementById("gap-message")
+        if (data.gap_from_top === 0) {
+            gapEl.innerHTML = `<span class="highlight">You're #1.</span> Keep the lead.`
+        } else {
+            gapEl.innerHTML = `Solve <span class="highlight">${data.gap_from_top} more</span> to beat <span class="top-name">${data.top_student}</span> for the top spot.`
+        }
+    }
+
+    async function loadFriends() {
+        const response = await authFetch("/friends")
+        const friends = await response.json()
+        const container = document.getElementById("friends-list")
+
+        if (!friends.length) {
+            container.innerHTML = `<div class="empty-friends">No friends added yet — add a classmate above.</div>`
+            return
+        }
+
+        container.innerHTML = friends.map(f => {
+            const gap = f.gap
+            let pillClass = gap > 0 ? "ahead" : gap < 0 ? "behind" : "same"
+            let pillText = gap > 0 ? `+${gap} ahead` : gap < 0 ? `${Math.abs(gap)} behind` : "tied"
+
+            return `
+                <div class="friend-row">
+                    <div>
+                        <div class="friend-info-name">${f.friend_name}</div>
+                        <div class="friend-info-branch">${f.branch}</div>
+                    </div>
+                    <div>
+                        <div class="friend-stat">${f.total_solved}</div>
+                        <div class="friend-stat-label">solved</div>
+                    </div>
+                    <div>
+                        <div class="friend-stat" style="color:#4ade80">${f.easy}</div>
+                        <div class="friend-stat-label">easy</div>
+                    </div>
+                    <div class="gap-pill ${pillClass}">${pillText}</div>
+                </div>
+            `
+        }).join("")
+    }
+
+    async function loadOnlineCount() {
+        const response = await fetch(`${BASE_URL}/count_online`)
+        const data = await response.json()
+        document.getElementById("online-count").textContent = data.online_count
+    }
+
+    async function addFriend() {
+        const friend_username = document.getElementById("friend-input").value.trim()
+        if (!friend_username) return
+
+        const response = await authFetch("/add-friend", "POST", {friend_username})
+        const data = await response.json()
+        const msg = document.getElementById("friend-msg")
+
+        msg.textContent = response.ok ? data.message : data.detail
+        msg.className = `friend-msg ${response.ok ? "ok" : "err"}`
+        msg.style.display = "block"
+
+        if (response.ok) {
+            document.getElementById("friend-input").value = ""
+            await loadFriends()
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("token")
+        window.location.href = "login.html"
+    }
+
+    loadDashboard()
+</script>
+</body>
+</html>
