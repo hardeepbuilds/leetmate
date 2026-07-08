@@ -203,7 +203,9 @@ def friends(current_user:str=Depends(get_current_user)):
 def count_online():
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""SELECT COUNT(*) FROM users WHERE last_active IS NOT NULL AND last_active >= datetime('now', '-5 minutes')""")
+    cursor.execute("""SELECT COUNT(*) FROM users 
+               WHERE last_active IS NOT NULL 
+               AND last_active >= NOW() - INTERVAL '5 minutes'""")
     count=cursor.fetchone()[0]
     conn.close()
     return {"online_count": count}

@@ -1,4 +1,3 @@
-import sqlite3
 from datetime import datetime
 from datetime import datetime, timezone, timedelta
 import psycopg2
@@ -46,7 +45,7 @@ def init_db():
             id SERIAL PRIMARY KEY,
             username TEXT NOT NULL,
             message TEXT NOT NULL,
-            submitted_at TEXT))""")
+            submitted_at TEXT)""")
     conn.commit()
     # conn.execute("DELETE FROM users")
     # conn.commit()
@@ -60,7 +59,7 @@ def create_user(username, password, branch, leetcode_name):
                           VALUES(%s,%s,%s,%s)""",
                           (username, password, branch, leetcode_name))
         conn.commit()
-    except sqlite3.IntegrityError:
+    except psycopg2.errors.UniqueViolation:
         conn.close()
         raise ValueError("Username already taken")
     conn.close()
@@ -74,18 +73,18 @@ def get_user_by_username(username):
     user=cursor.fetchone()
     conn.close()
     return user
-def leetcode_stats(leetcode_name,total_solved,easy,medium,hard):
-    conn=get_connection()
-    cursor=conn.cursor()
-    cursor.execute("""INSERT INTO leetcode_cache(
-                   leetcode_name,total_solved,easy,medium,hard,last_updated)
-                   VALUES(%s,%s,%s,%s,%s,%s)
-                   ON CONFLICT(leetcode_name) DO UPDATE SET
-                   total_solved=excluded.total_solved,
-                   easy=excluded.easy,
-                   medium=excluded.medium,
-                   hard=excluded.hard,
-                   last_updated=excluded.last_updated""",
-                   (leetcode_name,total_solved,easy,medium,hard,get_ist_now()))
+def leetcode_stats(leetcode_name, total_solved, easy, medium, hard):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO leetcode_cache(leetcode_name, total_solved, easy, medium, hard, last_updated)
+        VALUES(%s,%s,%s,%s,%s,%s)
+        ON CONFLICT(leetcode_name) DO UPDATE SET
+            total_solved=EXCLUDED.total_solved,
+            easy=EXCLUDED.easy,
+            medium=EXCLUDED.medium,
+            hard=EXCLUDED.hard,
+            last_updated=EXCLUDED.last_updated
+    """, (leetcode_name, total_solved, easy, medium, hard, get_ist_now()))
     conn.commit()
     conn.close()
