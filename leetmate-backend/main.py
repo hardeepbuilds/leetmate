@@ -50,7 +50,7 @@ class LoginUser(BaseModel):
 def login(data:LoginUser):
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""SELECT * FROM users WHERE username=?""",(data.username,))
+    cursor.execute("""SELECT * FROM users WHERE username=%s""",(data.username,))
     user=cursor.fetchone()
     conn.close()
     if user is None:
@@ -68,7 +68,7 @@ async def user_profile(current_user: str = Depends(get_current_user)):
     cursor = conn.cursor()
 
     cursor.execute("""SELECT username, branch, leetcode_name 
-                      FROM users WHERE username=?""", (current_user,))
+                      FROM users WHERE username=%s""", (current_user,))
     user_row = cursor.fetchone()
 
     if user_row is None:
@@ -78,7 +78,7 @@ async def user_profile(current_user: str = Depends(get_current_user)):
     leetcode_name = user_row[2]
 
     cursor.execute("""SELECT total_solved, easy, medium, hard, last_updated
-                      FROM leetcode_cache WHERE leetcode_name=?""", (leetcode_name,))
+                      FROM leetcode_cache WHERE leetcode_name=%s""", (leetcode_name,))
     cached = cursor.fetchone()
 
     cursor.execute("""SELECT leetcode_name, total_solved 
@@ -154,7 +154,7 @@ def add_friend(data:AddFriend, current_user:str=Depends(get_current_user)):
     cursor=conn.cursor()
     cursor.execute("""SELECT username 
                    FROM users
-                   WHERE username=?""",
+                   WHERE username=%s""",
                    (data.friend_username,))
     row=cursor.fetchone()
     if row is None:
@@ -162,7 +162,7 @@ def add_friend(data:AddFriend, current_user:str=Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="user not found")
     try:
         cursor.execute("""INSERT INTO friendships (username,friend_username)
-                       VALUES(?,?)""",
+                       VALUES(%s,%s)""",
                        (current_user,data.friend_username,))
         conn.commit()
     except Exception:
@@ -178,14 +178,14 @@ def friends(current_user:str=Depends(get_current_user)):
     cursor.execute("""SELECT lc.total_solved
                    FROM users u
                    JOIN leetcode_cache lc ON u.leetcode_name=lc.leetcode_name
-                   WHERE u.username=?""",(current_user,))
+                   WHERE u.username=%s""",(current_user,))
     me=cursor.fetchone()
     my_total=me[0]if me else 0
     cursor.execute("""SELECT f.friend_username, u.branch, lc.total_solved, lc.easy, lc.medium, lc.hard
                    FROM friendships f
                    JOIN users u ON f.friend_username=u.username
                    JOIN leetcode_cache lc ON u.leetcode_name=lc.leetcode_name
-                   WHERE f.username=?""",
+                   WHERE f.username=%s""",
                    (current_user,))
     rows=cursor.fetchall()
     conn.close()
@@ -223,7 +223,7 @@ def submit_feedback(data: FeedbackRequest, current_user: str = Depends(get_curre
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO feedback (username, message, submitted_at)
-        VALUES (?, ?, ?)
+        VALUES (%s,%s,%s)
     """, (current_user, data.message, get_ist_now()))
     conn.commit()
     conn.close()

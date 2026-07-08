@@ -1,11 +1,15 @@
 import sqlite3
 from datetime import datetime
 from datetime import datetime, timezone, timedelta
+import psycopg2
+import os
+from dotenv import load_dotenv
 IST = timezone(timedelta(hours=5, minutes=30))
 def get_ist_now():
     return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
+load_dotenv()
 def get_connection():
-    conn=sqlite3.connect("leetmate.db")
+    conn=psycopg2.connect(os.getenv("DATABASE_URL"))
     return conn
 
 def init_db():
@@ -15,12 +19,13 @@ def init_db():
            
       CREATE TABLE IF NOT EXISTS 
                    users(
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   id SERIAL PRIMARY KEY,
                    username TEXT UNIQUE NOT NULL,
                    password TEXT NOT NULL,
                    branch TEXT NOT NULL,
                    leetcode_name TEXT NOT NULL,
-                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                   last_active TIMESTAMP
                    )
                    """)
     cursor.execute("""CREATE TABLE IF NOT EXISTS leetcode_cache(
@@ -31,22 +36,17 @@ def init_db():
                    hard INTEGER,
                    last_updated TEXT)""")
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS feedback (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        message TEXT NOT NULL,
-        submitted_at TEXT
+     CREATE TABLE IF NOT EXISTS friendships (
+            username TEXT NOT NULL,
+            friend_username TEXT NOT NULL,
+            PRIMARY KEY (username, friend_username)
     )
 """)
-    cursor.execute("""CREATE TABLE IF NOT EXISTS friendships(
-                   username TEXT NOT NULL,
-                   friend_username TEXT NOT NULL,
-                   PRIMARY KEY(username, friend_username))""")
-    try:
-      cursor.execute("""ALTER TABLE users ADD COLUMN last_active TIMESTAMP""")
-      conn.commit()
-    except:
-     pass
+    cursor.execute("""CREATE TABLE IF NOT EXISTS feedback (
+            id SERIAL PRIMARY KEY,
+            username TEXT NOT NULL,
+            message TEXT NOT NULL,
+            submitted_at TEXT))""")
     conn.commit()
     # conn.execute("DELETE FROM users")
     # conn.commit()
@@ -57,7 +57,7 @@ def create_user(username, password, branch, leetcode_name):
     cursor = conn.cursor()
     try:
         cursor.execute("""INSERT INTO users(username, password, branch, leetcode_name) 
-                          VALUES(?,?,?,?)""",
+                          VALUES(%s,%s,%s,%s)""",
                           (username, password, branch, leetcode_name))
         conn.commit()
     except sqlite3.IntegrityError:
@@ -68,7 +68,7 @@ def create_user(username, password, branch, leetcode_name):
 def get_user_by_username(username):
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=?",
+    cursor.execute("SELECT * FROM users WHERE username=%s",
                    (username,)
                    )
     user=cursor.fetchone()
@@ -79,7 +79,7 @@ def leetcode_stats(leetcode_name,total_solved,easy,medium,hard):
     cursor=conn.cursor()
     cursor.execute("""INSERT INTO leetcode_cache(
                    leetcode_name,total_solved,easy,medium,hard,last_updated)
-                   VALUES(?,?,?,?,?,?)
+                   VALUES(%s,%s,%s,%s,%s,%s)
                    ON CONFLICT(leetcode_name) DO UPDATE SET
                    total_solved=excluded.total_solved,
                    easy=excluded.easy,
