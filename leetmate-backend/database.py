@@ -9,9 +9,9 @@ def get_ist_now():
 load_dotenv()
 def get_connection():
     conn = psycopg2.connect(
-        host="db.uvidacalykworeodxkcb.supabase.co",
+        host="aws-0-ap-northeast-1.pooler.supabase.com",
         database="postgres",
-        user="postgres",
+        user="postgres.uvidacalykworeodxkcb",
         password=os.getenv("DB_PASSWORD"),
         port=5432,
         sslmode="require"
