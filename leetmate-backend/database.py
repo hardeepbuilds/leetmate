@@ -8,7 +8,14 @@ def get_ist_now():
     return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
 load_dotenv()
 def get_connection():
-    conn=psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        host="db.uvidacalykworeodxkcb.supabase.co",
+        database="postgres",
+        user="postgres",
+        password=os.getenv("DB_PASSWORD"),
+        port=5432,
+        sslmode="require"
+    )
     return conn
 
 def init_db():
