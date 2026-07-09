@@ -223,7 +223,7 @@
 </div>
  
 <script>
-    const BASE_URL = "https://gallant-patience-production-aece.up.railway.app"
+    const BASE_URL = "https://leetmate.onrender.com"
  
     function showTab(tab) {
         document.getElementById("login-form").style.display = tab === "login" ? "block" : "none"
@@ -272,6 +272,9 @@
     if (!response.ok) { showError(data.detail); return }
 
     localStorage.setItem("token", data.access_token)
+    // alert("This site is built from scratch by a fellow CSE student — not AI.
+    // Bugs may exist.
+    // Feedbacks are welcome!")
     window.location.href = "dashboard.html"
 }
  
