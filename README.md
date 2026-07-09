@@ -14,11 +14,11 @@ A competitive LeetCode progress tracker built for my college students. See how s
 
 ## Tech Stack
 
-**Backend:** FastAPI, SQLite, bcrypt, JWT (python-jose), httpx, APScheduler
+**Backend:** FastAPI, bcrypt, JWT (python-jose), httpx, APScheduler
 
 **Frontend:** Vanilla HTML, CSS, JavaScript
 
-**Deployment:** Railway (backend), Vercel (frontend)
+**Deployment:** Render (backend), Vercel (frontend)
 
 # LeetMate — Frontend
 
@@ -30,6 +30,6 @@ Built with vanilla HTML, CSS, and JavaScript. Deployed on Vercel.
 
 ## Pages
 
-- `sign_ip_page.html` — signup and login
+- `index.html` — signup and login
 - `dashboard.html` — your stats, friends comparison, online count
 - `leaderboard.html` — college-wide rankings with branch filter
