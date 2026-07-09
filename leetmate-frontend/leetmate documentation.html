@@ -356,6 +356,12 @@
             .tech-grid { grid-template-columns: 1fr 1fr; }
             .site-header { flex-direction: column; align-items: flex-start; gap: 14px; }
         }
+        .highlight {
+           text-decoration: underline;
+           text-decoration-color: #22c55e; /* Green */
+           text-decoration-thickness: 2px;
+           text-underline-offset: 4px;
+}
     </style>
 </head>
 <body data-theme="dark">
@@ -468,7 +474,7 @@
 
     <!-- CTA -->
     <div class="cta">
-        <p>This site is built completely from scratch by a fellow CSE student — AI was ONLY used to learn the concepts and to catch my mistakes, to design the website AND TO CREATE THIS DOCUMENTATION. Bugs may exist, and that's part of the journey. If you find one, use the feedback button inside the app.</p>
+        <p>This site is built completely from scratch by a fellow CSE student — <span class="highlight">AI WAS ONLY USED TO LEARN THE CONCEPTS AND TO CATCH MY MISTAKES, TO DESIGN THE WEBSITE AND TO CREATE THIS DOCUMENTATION.</span> Bugs may exist, and that's part of the journey. If you find one, use the feedback button inside the app.</p>
         <a href="dashboard.html" class="cta-btn">Open LeetMate →</a>
     </div>
 
