@@ -29,7 +29,7 @@ def init_db():
                    username TEXT UNIQUE NOT NULL,
                    password TEXT NOT NULL,
                    branch TEXT NOT NULL,
-                   leetcode_name TEXT NOT NULL UNIQUE,
+                   leetcode_name TEXT UNIQUE NOT NULL,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                    last_active TIMESTAMP
                    )
