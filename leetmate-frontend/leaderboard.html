@@ -29,8 +29,9 @@
         .nav-brand {
             font-family: 'JetBrains Mono', monospace;
             font-size: 17px;
-            font-weight: 700;
-            color: #e0e0e0;
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
         }
 
         .nav-brand span { color: #22c55e; }
@@ -38,10 +39,13 @@
         .nav-links { display: flex; align-items: center; gap: 24px; }
 
         .nav-links a {
-            font-size: 13.5px;
+            font-size: 15px;
             color: #555;
-            text-decoration: none;
             font-weight: 500;
+            border: solid 1px #16a34a;
+            border-radius: 8px;
+            padding: 5px 12px;
+            text-decoration: none;
         }
 
         .nav-links a:hover { color: #e0e0e0; }
@@ -72,10 +76,10 @@
         .btn-logout {
             background: none;
             border: 1px solid #1f1f1f;
-            color: #555;
+            color: #7d7c7c;
             padding: 5px 12px;
             border-radius: 6px;
-            font-size: 12.5px;
+            font-size: 15px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
         }
@@ -117,7 +121,7 @@
             background: #111;
             border: 1px solid #1f1f1f;
             border-radius: 6px;
-            color: #555;
+            color: #b1abab;
             font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
@@ -125,7 +129,7 @@
         }
 
         .filter-btn.active {
-            background: #22c55e;
+            background: #0fc753;
             border-color: #22c55e;
             color: #0a0a0a;
         }
@@ -133,7 +137,7 @@
         /* TABLE */
         .table-wrap {
             background: #111111;
-            border: 1px solid #1f1f1f;
+            border: 1px solid #757575;
             border-radius: 12px;
             overflow: hidden;
         }
@@ -151,14 +155,14 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: #333;
+            color: #b1abab;
         }
 
         .lb-row {
             display: grid;
             grid-template-columns: 48px 1fr 70px 80px 60px 70px 60px 100px;
             padding: 13px 18px;
-            border-bottom: 1px solid #141414;
+            border-bottom: 1px solid #1b1b1b;
             gap: 8px;
             align-items: center;
         }
@@ -209,9 +213,9 @@
         }
 
         .lb-total { color: #22c55e; }
-        .lb-easy { color: #4ade80; }
-        .lb-medium { color: #888; }
-        .lb-hard { color: #555; }
+        .lb-easy { color: #57de89; }
+        .lb-medium { color: #ffae00; }
+        .lb-hard { color: #e62525; }
 
         .gap-pill {
             font-family: 'JetBrains Mono', monospace;
@@ -289,12 +293,13 @@
             <div class="empty-state">Loading leaderboard...</div>
         </div>
     </div>
+    <div class="foot" style="padding-top:32px; font-size: 14px; color: #6d6c6c; text-align: center;">TO KNOW MORE ABOUT THE LEETMATE, <a href="leetmate documentation.html" target="_blank" style="text-decoration: none; color: #22c55e; ">CLICK HERE</a></div>
 </div>
 
 <script>
     const BASE_URL = "https://leetmate.onrender.com"
-    const token = localStorage.getItem("token")
-    if (!token) window.location.href = "index.html"
+    // const token = localStorage.getItem("token")
+    // if (!token) window.location.href = "index.html"
 
     let allRows = []
     let myUsername = ""
