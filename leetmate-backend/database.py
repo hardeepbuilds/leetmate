@@ -35,7 +35,7 @@ def init_db():
                    )
                    """)
     cursor.execute("""CREATE TABLE IF NOT EXISTS leetcode_cache(
-                   leetcode_name TEXT PRIMARY KEY,
+                   leetcode_name TEXT UNIQUE NOT NULL PRIMARY KEY,
                    total_solved INTEGER,
                    easy INTEGER,
                    medium INTEGER,
