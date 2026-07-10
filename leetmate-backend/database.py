@@ -29,13 +29,13 @@ def init_db():
                    username TEXT UNIQUE NOT NULL,
                    password TEXT NOT NULL,
                    branch TEXT NOT NULL,
-                   leetcode_name TEXT NOT NULL,
+                   leetcode_name TEXT NOT NULL UNIQUE,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                    last_active TIMESTAMP
                    )
                    """)
     cursor.execute("""CREATE TABLE IF NOT EXISTS leetcode_cache(
-                   leetcode_name TEXT UNIQUE NOT NULL PRIMARY KEY,
+                   leetcode_name TEXT UNIQUE PRIMARY KEY,
                    total_solved INTEGER,
                    easy INTEGER,
                    medium INTEGER,
