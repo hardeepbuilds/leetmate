@@ -271,10 +271,8 @@
 
     if (!response.ok) { showError(data.detail); return }
 
-    localStorage.setItem("token", data.access_token)
-    // alert("This site is built from scratch by a fellow CSE student — not AI.
-    // Bugs may exist.
-    // Feedbacks are welcome!")
+    sessionStorage.setItem("token", data.access_token)
+     alert("This site is built from scratch by a fellow CSE student — not AI.Bugs may exist.Feedbacks are welcome!")
     window.location.href = "dashboard.html"
 }
  

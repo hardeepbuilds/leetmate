@@ -418,7 +418,7 @@
 
 <script>
     const BASE_URL = "https://leetmate.onrender.com"
-    const token = localStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
     if (!token) window.location.href = "index.html"
 
     async function authFetch(endpoint, method="GET", body=null) {
@@ -434,9 +434,11 @@
     }
 
     async function loadDashboard() {
-        await loadMe()
-        await loadFriends()
-        await loadOnlineCount()
+        await promise.all([
+            loadMe(),
+            loadFriends(),
+            loadOnlineCount()
+        ])
     }
 
     async function loadMe() {
@@ -521,7 +523,7 @@
     }
 
     function logout() {
-        localStorage.removeItem("token")
+        sessionStorage.removeItem("token")
         window.location.href = "login.html"
     }
 
