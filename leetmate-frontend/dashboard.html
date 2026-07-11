@@ -434,7 +434,7 @@
     }
 
     async function loadDashboard() {
-        await promise.all([
+        await Promise.all([
             loadMe(),
             loadFriends(),
             loadOnlineCount()
