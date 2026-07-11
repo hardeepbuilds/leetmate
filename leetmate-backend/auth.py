@@ -35,8 +35,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""UPDATE users SET last_active=%s WHERE username=%s""",
-                   (get_ist_now(), username))
+    cursor.execute("""UPDATE users SET last_active=NOW() WHERE username=%s""",
+                   (username,))
     conn.commit()
     conn.close()
     return username
