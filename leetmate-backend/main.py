@@ -212,7 +212,7 @@ def count_online():
     cursor=conn.cursor()
     cursor.execute("""SELECT COUNT(*) FROM users 
                WHERE last_active IS NOT NULL 
-               AND last_active >= NOW() - INTERVAL '5 minutes'""")
+               AND last_active::timestamp >= NOW() - INTERVAL '5 minutes'""")
     count=cursor.fetchone()[0]
     conn.close()
     return {"online_count": count}
