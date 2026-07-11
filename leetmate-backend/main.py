@@ -108,6 +108,9 @@ async def user_profile(current_user: str = Depends(get_current_user)):
         last_updated = cached[4]
 
     gap = (top_student[1] - total) if top_student else 0
+    if gap<0:
+        gap=0
+        top_name="You"
     top_name = top_student[0] if top_student else "nobody yet"
 
     return {

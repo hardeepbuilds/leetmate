@@ -454,7 +454,7 @@
         document.getElementById("last-updated").textContent = data.last_updated
 
         const gapEl = document.getElementById("gap-message")
-        if (data.gap_from_top === 0) {
+        if (data.gap_from_top === 0 || data.top_student==="You") {
             gapEl.innerHTML = `<span class="highlight">You're #1.</span> Keep the lead.`
         } else {
             gapEl.innerHTML = `Solve <span class="highlight">${data.gap_from_top} more</span> to beat <span class="top-name">${data.top_student}</span> for the top spot.`
