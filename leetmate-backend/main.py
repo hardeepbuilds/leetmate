@@ -31,6 +31,9 @@ class CreateUser(BaseModel):
     leetcode_name:str
 @app.post("/signup")
 def signup(data: CreateUser):
+    stats=fetch_leetcode_stats(data.leetcode_name)
+    if stats is None:
+        raise HTTPException(status_code=400, detail="LeetCode username not found")
     hashed_password = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt())
     try:
         create_user(
@@ -199,6 +202,7 @@ def friends(current_user:str=Depends(get_current_user)):
         "gap":row[2]-my_total
       }for row in rows
     ]
+#online-count__________________________________________________________________________________________________________________________________________
 @app.get("/count_online")
 def count_online():
     conn=get_connection()

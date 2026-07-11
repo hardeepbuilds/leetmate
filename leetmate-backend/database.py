@@ -68,6 +68,8 @@ def create_user(username, password, branch, leetcode_name):
         conn.commit()
     except psycopg2.errors.UniqueViolation:
         conn.close()
+        if "unique_leetcode_name" in str(e):
+           raise ValueError("This LeetCode account is already linked to another user")
         raise ValueError("Username already taken")
     conn.close()
 
