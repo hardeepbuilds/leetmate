@@ -30,8 +30,8 @@ class CreateUser(BaseModel):
     branch:Branch
     leetcode_name:str
 @app.post("/signup")
-def signup(data: CreateUser):
-    stats=fetch_leetcode_stats(data.leetcode_name)
+async def signup(data: CreateUser):
+    stats=await fetch_leetcode_stats(data.leetcode_name)
     if stats is None:
         raise HTTPException(status_code=400, detail="LeetCode username not found")
     hashed_password = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt())

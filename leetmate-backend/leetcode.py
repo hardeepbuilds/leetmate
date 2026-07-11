@@ -20,7 +20,8 @@ query getUserProfile($username: String!) {
 """
 
 async def fetch_leetcode_stats(leetcode_username: str):
-    async with httpx.AsyncClient() as client:
+    try:
+      async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.post(
             LEETCODE_GRAPHQL,
             json={
@@ -49,3 +50,5 @@ async def fetch_leetcode_stats(leetcode_username: str):
             "medium": medium,
             "hard": hard
         }
+    except Exception:
+       return None
