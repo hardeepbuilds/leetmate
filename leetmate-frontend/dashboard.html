@@ -387,7 +387,13 @@
             <div class="stat-box-value" id="hard">—</div>
         </div>
     </div>
+    <div style="background:var(--surface);border:1px solid var(--border);
+         border-radius:10px;padding:18px;margin-bottom:24px;">
+        <div class="section-label" style="margin-bottom:12px;">Activity</div>
+        <div id="my-heatmap"></div>
+    </div>
     <div class="last-updated">Last updated: <span id="last-updated">—</span></div>
+
 
     <!-- FRIENDS -->
     <div class="friends-header">
@@ -461,6 +467,8 @@
         } else {
             gapEl.innerHTML = `Solve <span class="highlight">${data.gap_from_top} more</span> to beat <span class="top-name">${data.top_student}</span> for the top spot.`
         }
+        const calendar = data.submission_calendar || "{}"
+         renderHeatmap("my-heatmap", calendar)
     }
 
     async function loadFriends() {
@@ -494,8 +502,29 @@
                     </div>
                     <div class="gap-pill ${pillClass}">${pillText}</div>
                 </div>
+                <div style="padding:16px 18px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+                <div class="friend-info-name">${f.friend_name}</div>
+                <div class="friend-info-branch">${f.branch}</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <div style="text-align:right;">
+                    <div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:700;color:#22c55e">${f.total_solved}</div>
+                    <div style="font-size:11px;color:#444;">solved</div>
+                </div>
+                <div class="gap-pill ${f.gap > 0 ? 'ahead' : f.gap < 0 ? 'behind' : 'same'}">
+                    ${f.gap > 0 ? `+${f.gap} ahead` : f.gap < 0 ? `${Math.abs(f.gap)} behind` : "tied"}
+                </div>
+            </div>
+        </div>
+        <div id="heatmap-friend-${index}"></div>
+    </div>
             `
         }).join("")
+        friends.forEach((f, index) => {
+    renderHeatmap(`heatmap-friend-${index}`, f.submission_calendar || "{}")
+})
     }
 
     async function loadOnlineCount() {
@@ -541,6 +570,87 @@
     msg.style.display = "block"
 
     if (response.ok) document.getElementById("feedback-input").value = ""
+}
+function renderHeatmap(containerId, calendarJson) {
+    const container = document.getElementById(containerId)
+    if (!container) return
+
+    let calendar = {}
+    try {
+        calendar = typeof calendarJson === "string" ? JSON.parse(calendarJson) : calendarJson
+    } catch { calendar = {} }
+
+
+    const today = new Date()
+    const weeks = []
+    const startDate = new Date(today)
+    startDate.setDate(startDate.getDate() - 364)
+
+
+    const values = Object.values(calendar).map(Number)
+    const maxVal = values.length ? Math.max(...values) : 1
+
+
+    let currentWeek = []
+    const tempDate = new Date(startDate)
+
+
+    for (let i = 0; i < tempDate.getDay(); i++) {
+        currentWeek.push(null)
+    }
+
+    while (tempDate <= today) {
+        const unix = Math.floor(tempDate.getTime() / 1000)
+        const utcMidnight = Math.floor(Date.UTC(
+            tempDate.getFullYear(),
+            tempDate.getMonth(),
+            tempDate.getDate()
+        ) / 1000)
+
+        const count = calendar[unix] || calendar[utcMidnight] || 0
+        currentWeek.push({ date: new Date(tempDate), count })
+
+        if (tempDate.getDay() === 6) {
+            weeks.push(currentWeek)
+            currentWeek = []
+        }
+        tempDate.setDate(tempDate.getDate() + 1)
+    }
+    if (currentWeek.length) weeks.push(currentWeek)
+
+    function getColor(count) {
+        if (count === 0) return "#1a1a1a"
+        const intensity = Math.min(count / Math.max(maxVal * 0.25, 1), 1)
+        if (count >= maxVal * 0.75) return "#22c55e"
+        if (count >= maxVal * 0.5) return "#16a34a"
+        if (count >= maxVal * 0.25) return "#166534"
+        return "#14532d"
+    }
+
+    // build HTML
+    const gridHTML = `
+        <div style="display:flex;gap:3px;overflow-x:auto;">
+            ${weeks.map(week => `
+                <div style="display:flex;flex-direction:column;gap:3px;">
+                    ${week.map(day => day === null
+                        ? `<div style="width:11px;height:11px;"></div>`
+                        : `<div style="width:11px;height:11px;border-radius:2px;
+                               background:${getColor(day.count)};cursor:default;"
+                               title="${day.date.toDateString()}: ${day.count} submissions">
+                           </div>`
+                    ).join("")}
+                </div>
+            `).join("")}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
+            <span style="font-size:11px;color:#444;">Less</span>
+            ${["#1a1a1a","#14532d","#166534","#16a34a","#22c55e"].map(c =>
+                `<div style="width:11px;height:11px;border-radius:2px;background:${c}"></div>`
+            ).join("")}
+            <span style="font-size:11px;color:#444;">More</span>
+        </div>
+    `
+    container.innerHTML = gridHTML
 }
 </script>
 </body>
