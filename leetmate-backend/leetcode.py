@@ -1,11 +1,13 @@
 import httpx
 from database import leetcode_stats
+import json
 
 LEETCODE_GRAPHQL = "https://leetcode.com/graphql"
 
 QUERY = """
 query getUserProfile($username: String!) {
   matchedUser(username: $username) {
+  submissionCalendar
     submitStats {
       acSubmissionNum {
         difficulty
@@ -40,6 +42,7 @@ async def fetch_leetcode_stats(leetcode_username: str):
             easy = next(s["count"] for s in stats if s["difficulty"] == "Easy")
             medium = next(s["count"] for s in stats if s["difficulty"] == "Medium")
             hard = next(s["count"] for s in stats if s["difficulty"] == "Hard")
+            calendar = user_data.get("submissionCalendar", "{}")
 
             leetcode_stats(leetcode_username, total, easy, medium, hard)
 
@@ -47,7 +50,8 @@ async def fetch_leetcode_stats(leetcode_username: str):
                 "total_solved": total,
                 "easy": easy,
                 "medium": medium,
-                "hard": hard
+                "hard": hard,
+                "submission_calendar":calendar
             }
     except Exception:
         return None

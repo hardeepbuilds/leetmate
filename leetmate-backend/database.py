@@ -82,18 +82,19 @@ def get_user_by_username(username):
     user=cursor.fetchone()
     conn.close()
     return user
-def leetcode_stats(leetcode_name, total_solved, easy, medium, hard):
+def leetcode_stats(leetcode_name, total_solved, easy, medium, hard, calendar=None):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO leetcode_cache(leetcode_name, total_solved, easy, medium, hard, last_updated)
-        VALUES(%s,%s,%s,%s,%s,%s)
+        INSERT INTO leetcode_cache(leetcode_name, total_solved, easy, medium, hard, last_updated, submission_calendar)
+        VALUES(%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT(leetcode_name) DO UPDATE SET
             total_solved=EXCLUDED.total_solved,
             easy=EXCLUDED.easy,
             medium=EXCLUDED.medium,
             hard=EXCLUDED.hard,
-            last_updated=EXCLUDED.last_updated
-    """, (leetcode_name, total_solved, easy, medium, hard, get_ist_now()))
+            last_updated=EXCLUDED.last_updated,
+            submission_calendar=EXCLUDED.submission_calendar
+    """, (leetcode_name, total_solved, easy, medium, hard, get_ist_now(), calendar))
     conn.commit()
     conn.close()

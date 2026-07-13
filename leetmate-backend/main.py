@@ -80,7 +80,7 @@ async def user_profile(current_user: str = Depends(get_current_user)):
 
     leetcode_name = user_row[2]
 
-    cursor.execute("""SELECT total_solved, easy, medium, hard, last_updated
+    cursor.execute("""SELECT total_solved, easy, medium, hard, last_updated, submission_calendar
                       FROM leetcode_cache WHERE leetcode_name=%s""", (leetcode_name,))
     cached = cursor.fetchone()
 
@@ -123,7 +123,8 @@ async def user_profile(current_user: str = Depends(get_current_user)):
         "hard": hard,
         "last_updated": last_updated,
         "gap_from_top": gap,
-        "top_student": top_name
+        "top_student": top_name,
+        "submission_calendar":cached[5] if cached else "{}"
     }
 #leaderboard___________________________________________________________________________________________________________________________
 @app.get("/leaderboard")
@@ -187,7 +188,7 @@ def friends(current_user:str=Depends(get_current_user)):
                    WHERE u.username=%s""",(current_user,))
     me=cursor.fetchone()
     my_total=me[0]if me else 0
-    cursor.execute("""SELECT f.friend_username, u.branch, lc.total_solved, lc.easy, lc.medium, lc.hard
+    cursor.execute("""SELECT f.friend_username, u.branch, lc.total_solved, lc.easy, lc.medium, lc.hard, lc.submission_calendar
                    FROM friendships f
                    JOIN users u ON f.friend_username=u.username
                    JOIN leetcode_cache lc ON u.leetcode_name=lc.leetcode_name
@@ -202,9 +203,11 @@ def friends(current_user:str=Depends(get_current_user)):
         "easy":row[3],
         "medium":row[4],
         "hard":row[5],
-        "gap":row[2]-my_total
+        "gap":row[2]-my_total,
+        "submission_calendar":row[6] or "{}"
       }for row in rows
     ]
+    
 #online-count__________________________________________________________________________________________________________________________________________
 @app.get("/count_online")
 def count_online():
