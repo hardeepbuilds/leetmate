@@ -481,48 +481,34 @@
             return
         }
 
-        container.innerHTML = friends.map(f => {
-            const gap = f.gap
-            let pillClass = gap > 0 ? "ahead" : gap < 0 ? "behind" : "same"
-            let pillText = gap > 0 ? `+${gap} ahead` : gap < 0 ? `${Math.abs(gap)} behind` : "tied"
+        container.innerHTML = friends.map((f, index) => {
+    const gap = f.gap
+    let pillClass = gap > 0 ? "ahead" : gap < 0 ? "behind" : "same"
+    let pillText = gap > 0 ? `+${gap} ahead` : gap < 0 ? `${Math.abs(gap)} behind` : "tied"
 
-            return `
-                <div class="friend-row">
-                    <div>
-                        <div class="friend-info-name">${f.friend_name}</div>
-                        <div class="friend-info-branch">${f.branch}</div>
-                    </div>
-                    <div>
-                        <div class="friend-stat">${f.total_solved}</div>
-                        <div class="friend-stat-label">solved</div>
-                    </div>
-                    <div>
-                        <div class="friend-stat" style="color:#4ade80">${f.easy}</div>
-                        <div class="friend-stat-label">easy</div>
-                    </div>
-                    <div class="gap-pill ${pillClass}">${pillText}</div>
+    return `
+        <div style="border-bottom:1px solid var(--border);">
+            <div class="friend-row">
+                <div>
+                    <div class="friend-info-name">${f.friend_name}</div>
+                    <div class="friend-info-branch">${f.branch}</div>
                 </div>
-                <div style="padding:16px 18px;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-            <div>
-                <div class="friend-info-name">${f.friend_name}</div>
-                <div class="friend-info-branch">${f.branch}</div>
+                <div>
+                    <div class="friend-stat">${f.total_solved}</div>
+                    <div class="friend-stat-label">solved</div>
+                </div>
+                <div>
+                    <div class="friend-stat" style="color:#4ade80">${f.easy}</div>
+                    <div class="friend-stat-label">easy</div>
+                </div>
+                <div class="gap-pill ${pillClass}">${pillText}</div>
             </div>
-            <div style="display:flex;gap:12px;align-items:center;">
-                <div style="text-align:right;">
-                    <div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:700;color:#22c55e">${f.total_solved}</div>
-                    <div style="font-size:11px;color:#444;">solved</div>
-                </div>
-                <div class="gap-pill ${f.gap > 0 ? 'ahead' : f.gap < 0 ? 'behind' : 'same'}">
-                    ${f.gap > 0 ? `+${f.gap} ahead` : f.gap < 0 ? `${Math.abs(f.gap)} behind` : "tied"}
-                </div>
-            </div>
+            <div style="padding:0 18px 14px;" id="heatmap-friend-${index}"></div>
         </div>
-        <div id="heatmap-friend-${index}"></div>
-    </div>
-            `
-        }).join("")
-        friends.forEach((f, index) => {
+    `
+}).join("")
+
+friends.forEach((f, index) => {
     renderHeatmap(`heatmap-friend-${index}`, f.submission_calendar || "{}")
 })
     }
