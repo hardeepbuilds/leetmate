@@ -277,7 +277,7 @@
             <button class="filter-btn" onclick="filterBranch('ECE', this)">ECE</button>
         </div>
     </div>
-
+    <p id="branch-message" style="font-size:13px;color:#22c55e;margin-bottom:14px;"></p>
     <div class="table-wrap">
         <div class="lb-header-row">
             <span>#</span>
@@ -375,6 +375,14 @@
                 </div>
             `
         }).join("")
+        const top10 = rows.slice(0, 10)
+       const branchCount = {}
+       top10.forEach(r => branchCount[r.branch] = (branchCount[r.branch] || 0) + 1)
+       const leadingBranch = Object.entries(branchCount).sort((a,b) => b[1]-a[1])[0]
+       if (leadingBranch) {
+          document.getElementById("branch-message").textContent = 
+        `🏅 ${leadingBranch[0]} students are leading the top 10`
+}
     }
 
     function filterBranch(branch, btn) {
